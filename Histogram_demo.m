@@ -77,3 +77,13 @@ y2_values = f(x_values) * h.BinWidth;
 
 % We'll plot these with a green line
 plot(x_values, y2_values, 'LineWidth', 2, 'Color', 'g');
+
+% This sets some paper-related properties of the figure so that you can
+% save it as a PDF and it doesn't fill a whole page.
+% gcf is "get current figure handle"
+% See https://stackoverflow.com/a/18868933/2407278
+fig = gcf;
+fig.Units = 'inches';
+screenposition = fig.Position;
+fig.PaperPosition = [0 0 screenposition(3:4)];
+fig.PaperSize = [screenposition(3:4)];
