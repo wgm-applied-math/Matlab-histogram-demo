@@ -1,5 +1,6 @@
 % Create a histogram from some random samples
 
+% This is the rate parameter:
 lambda = 0.8;
 mean_param = 1/lambda;
 
