@@ -6,7 +6,7 @@ mean_param = 1/lambda;
 
 % Remember that in Matlab, the exponential distribution is specified by its
 % mean instead of by its rate parameter.
-sample_dist = makedist("Exponential", "mu", mean_param);
+sample_dist = makedist("Exponential", mu=mean_param);
 samples = random(sample_dist, [1, 1000]);
 
 % This generates bin counts automatically, but doesn't make the bar chart.
