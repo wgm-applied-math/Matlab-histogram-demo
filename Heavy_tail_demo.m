@@ -1,50 +1,64 @@
 %% Demo of heavy-tail statistics
-% This script creates a bunch of many sample sets drawn from an exponential
+% This script creates a bunch of sample sets drawn from an exponential
 % distribution.  It then computes the maximum, the 90th percentile, and
 % median of each set.  Those are then binned and plotted as histograms.
 % That shows that the maximum of any given sample has a very spread-out
-% distribution, while the 90th percentile is confined, and the median is
-% very concentrated.
+% distribution, while the 90th percentile is more confined, and the median
+% is very concentrated.
 
 % This is the rate parameter:
 lambda = 0.8;
 mean_param = 1/lambda;
 
-% Remember that in Matlab, the exponential distribution is specified by its
+% Set the random number generator seed.
+% This causes MATLAB to use the same sequence of pseudo-random numbers each
+% time this script is run.
+rng(2024);
+
+% In MATLAB, the exponential distribution is specified by its
 % mean instead of by its rate parameter.
 sample_dist = makedist("Exponential", mu=mean_param);
+
+% Produce a random array of 50 rows and 2000 columns.
+% These are interpreted as 2000 samples, with 50 values in each sample.
 base_samples = random(sample_dist, [50, 2000]);
+
+% Compute statistics for each of the 2000 samples.
+% These functions treat each column of the base_samples array as a separate
+% sample.  The result of each is an array with one row and a column for
+% each column in base_samples.
 max_samples = max(base_samples);
 q90_samples = quantile(base_samples, 0.9);
 med_samples = quantile(base_samples, 0.5);
-% mean_samples = mean(base_samples);
 
-% Here's how to get a histogram picture with theoretical values
-% superimposed
+% Make a figure object with one set of axes.
+fig = figure();
+t = tiledlayout(fig,1,1);
+ax = nexttile(t);
 
-% This is the theoretical CDF
-F = @(x) 1 - exp(-lambda*x);
-
-% Note that if we apply F to an input array, the output is an array of the
-% same size whose entries are F applied to the corresponding entry in the
-% input array.
-
-% Tell Matlab to apply multiple plotting commands to the current figure.
-hold on;
+% Set the axes to hold so we can plot several histograms at the same time.
+hold(ax, "on");
 
 % Create the histograms.
+histogram(ax, max_samples, BinWidth=0.25);
+histogram(ax, q90_samples, BinWidth=0.25);
+histogram(ax, med_samples, BinWidth=0.25);
 
-histogram(max_samples, BinWidth=0.25);
-histogram(q90_samples, BinWidth=0.25);
-histogram(med_samples, BinWidth=0.25);
-% histogram(mean_samples, BinWidth=0.25);
+% Set titles
+title(ax, "Distributions of sample statistics");
+xlabel(ax, "time");
+ylabel(ax, "count");
 
-% This sets some paper-related properties of the figure so that you can
-% save it as a PDF and it doesn't fill a whole page.
-% gcf is "get current figure handle"
-% See https://stackoverflow.com/a/18868933/2407278
-fig = gcf;
-fig.Units = 'inches';
-screenposition = fig.Position;
-fig.PaperPosition = [0 0 screenposition(3:4)];
-fig.PaperSize = [screenposition(3:4)];
+% Fix axes ranges
+xlim(ax, [-0.5, 12]);
+ylim(ax, [0, 1200]);
+
+% Make a legend.
+% The strings are used to label the plotted data sets in order.
+legend(ax, "max", "90%", "median");
+
+% Pause for a moment to let MATLAB's picture renderer catch up
+pause(2);
+
+% Save the picture as a PDF file
+exportgraphics(fig, "Histogram of sample statistics of the exponential distribution.pdf");
