@@ -1,4 +1,4 @@
-%% Demo of heavy-tail statistics
+%% Demo of light-tail statistics
 % This script creates a bunch of sample sets drawn from a normal
 % distribution.  It then computes the maximum, the 90th percentile, and
 % median of each set.  Those are then binned and plotted as histograms.
