@@ -1,3 +1,9 @@
+# Ignore other Matlab stuff
+.MATLABDriveTag
+
+# Ignore PDFs
+*.pdf
+
 # Ignore emacs backups
 *~
 
